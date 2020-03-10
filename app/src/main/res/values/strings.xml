@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="login">Login</string>
+    <string name="hello">Hey man!!! Come on, log in :)</string>
+    <string name="enter">Log in</string>
+    <string name="main">The main screen</string>
+    <string name="nav_subjects">Subjects</string>
+    <string name="nav_chats">Chats</string>
+    <string name="nav_docs">Docs</string>
+    <string name="nav_teachers">Teachers</string>
+</resources>
