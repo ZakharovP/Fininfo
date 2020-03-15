@@ -8,4 +8,6 @@
     <string name="nav_chats">Chats</string>
     <string name="nav_docs">Docs</string>
     <string name="nav_teachers">Teachers</string>
+    <string name="register">Register</string>
+    <string name="back">Назад</string>
 </resources>
