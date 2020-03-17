@@ -8,4 +8,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Чат" />
+
+    <EditText
+        android:id="@+id/messageText"
+        android:layout_width="300dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="Текст"
+        android:inputType="textPersonName"
+        android:text="" />
+
+    <Button
+        android:id="@+id/loginSubmit"
+        android:layout_width="292dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="61dp"
+        android:text="@string/send"
+        android:onClick="sendMessage"/>
+
 </LinearLayout>
