@@ -81,13 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
         protected void onPostExecute(String answer) {
             super.onPostExecute(answer);
             try {
-                Log.i("app", "!!!result = " + answer);
-
                 JSONObject answerData = new JSONObject(answer);
-                Log.i("app", answerData.getString("success"));
-
-
-
 
                 if (answerData.getBoolean("success")) {
                     Intent intent = new Intent(RegisterActivity.this, MainActivity.class);

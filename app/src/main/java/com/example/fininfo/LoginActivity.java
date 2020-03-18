@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             HttpURLConnection connection = null;
             String path = params[0];
-            String parammetrs = params[1]; //data to post
+            String parammetrs = params[1];
 
             String response = "";
 
@@ -93,13 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(String answer) {
             super.onPostExecute(answer);
             try {
-                Log.i("app", "!!!result = " + answer);
-
                 JSONObject answerData = new JSONObject(answer);
-                Log.i("app", answerData.getString("success"));
-
-
-
 
                 if (answerData.getBoolean("success")) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -138,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
             String login = ((EditText) findViewById(R.id.loginText)).getText().toString().trim();
             String password = ((EditText) findViewById(R.id.passwordText)).getText().toString().trim();
 
-            Log.i("app", "login = " + login);
-            Log.i("app", "pass = " + password);
 
             String url = "http://10.0.2.2:3000/login";
             LoginActivity.Request req = new LoginActivity.Request();
