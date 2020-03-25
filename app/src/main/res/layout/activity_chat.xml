@@ -21,28 +21,33 @@
         android:inputType="textPersonName"
         android:text="" />
 
-    <Button
-        android:id="@+id/loginSubmit"
-        android:layout_width="292dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="61dp"
-        android:text="@string/send"
-        android:onClick="sendMessage"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/loginSubmit"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/send"
+            android:onClick="sendMessage"/>
 
-    <Button
-        android:id="@+id/pickPhotoButton"
-        android:layout_width="292dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="61dp"
-        android:text="@string/pickPhoto"
-        android:onClick="pickPhoto"/>
+        <Button
+            android:id="@+id/pickPhotoButton"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/pickPhoto"
+            android:onClick="pickPhoto"/>
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="70dp"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <ScrollView
@@ -55,7 +60,7 @@
             android:id="@+id/chatMessagesLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#A0A0A0"
+            android:background="#EDE6F8"
             android:orientation="vertical">
         </LinearLayout>
 
