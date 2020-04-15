@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/roomHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Список комнат" />
+
+    <EditText
+        android:id="@+id/newRoomText"
+        android:layout_width="394dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="60dp"
+        android:ems="10"
+        android:hint="Название новой комнаты"
+        android:text="" />
+
+    <LinearLayout
+        android:id="@+id/roomListLayout"
+        android:layout_width="match_parent"
+        android:layout_height="370dp"
+        android:orientation="vertical"></LinearLayout>
+
+    <Button
+        android:id="@+id/newRoomButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="createRoom"
+        android:text="Создать комнату" />
+
+</LinearLayout>
