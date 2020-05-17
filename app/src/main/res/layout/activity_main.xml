@@ -19,20 +19,14 @@
             android:background="@color/colorPrimary"
             android:id="@+id/itemsListView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_weight="40"
+            android:layout_height="0dp">
         </ListView>
 
         <Space
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_weight="1" />
-
-        <ListView
-            android:background="@color/colorAccent"
-            android:id="@+id/teachersListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </ListView>
+            android:layout_weight="0" />
     </LinearLayout>
 
     <RelativeLayout

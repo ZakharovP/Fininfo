@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try{
+        /*try{
             String url = "http://10.0.2.2:3000/teachers";
             Request req = new Request();
 
@@ -110,11 +109,12 @@ public class MainActivity extends AppCompatActivity {
         } catch(Exception e){
             System.out.println("!!!!!!!ERROR!!!!!!!!");
             e.printStackTrace();
-        }
+        }*/
 
 
         try {
-            String url = "http://10.0.2.2:3000/classes";
+            //String url = "http://10.0.2.2:3000/classes";
+            String url = "https://ruz.fa.ru/api/schedule/group/8892?lng=1";
             Request req = new Request();
 
             String s_classes = req.execute(url).get();
@@ -123,17 +123,26 @@ public class MainActivity extends AppCompatActivity {
             JSONArray classArray = new JSONArray(s_classes);
             ArrayList<String> classes_t = new ArrayList<>();
             for (int i = 0; i < classArray.length(); i++) {
-                String startTime = classArray.getJSONObject(i).getString("START_TIME");
+                /*String startTime = classArray.getJSONObject(i).getString("START_TIME");
                 String endTime = classArray.getJSONObject(i).getString("END_TIME");
                 Integer dayOfWeekIndex = classArray.getJSONObject(i).getInt("DAY_OF_WEEK");
                 String location = classArray.getJSONObject(i).getString("LOCATION");
                 String teacherName = classArray.getJSONObject(i).getString("TEACHER_NAME");
-                String groupName = classArray.getJSONObject(i).getString("GROUP_NAME");
+                String groupName = classArray.getJSONObject(i).getString("GROUP_NAME");*/
 
-                String[] daysOfWeek = {"пн", "вт", "ср", "чт", "пт", "сб", "вс"};
+                String startTime = classArray.getJSONObject(i).getString("beginLesson");
+                String endTime = classArray.getJSONObject(i).getString("endLesson");
+                String dayOfWeek = classArray.getJSONObject(i).getString("dayOfWeekString");
+                String location = classArray.getJSONObject(i).getString("building");
+                String teacherName = classArray.getJSONObject(i).getString("lecturer");
+                String groupName = classArray.getJSONObject(i).getString("groupOid");
+
+
+                //String[] daysOfWeek = {"пн", "вт", "ср", "чт", "пт", "сб", "вс"};
                 //String class_ = startTime + " - " + endTime + "\n";
                 //class_ = class_ +
-                String class_ = String.format("%s - %s (%s), %s\n%s\n%s", startTime, endTime, daysOfWeek[dayOfWeekIndex], groupName, teacherName, location);
+                //String class_ = String.format("%s - %s (%s), %s\n%s\n%s", startTime, endTime, daysOfWeek[dayOfWeekIndex], groupName, teacherName, location);
+                String class_ = String.format("%s - %s (%s), %s\n%s\n%s", startTime, endTime, dayOfWeek, groupName, teacherName, location);
                 classes_t.add(class_);
             }
 
@@ -158,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goChats(View view) {
-        Intent intent = new Intent(this, ChatActivity.class);
+        Intent intent = new Intent(this, RoomActivity.class);
         startActivity(intent);
     }
 

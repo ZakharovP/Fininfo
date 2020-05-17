@@ -87,7 +87,22 @@ public class RoomActivity extends AppCompatActivity {
                 JSONObject answerData = new JSONObject(answer);
 
                 if (answerData.getBoolean("success")) {
+                    String title = answerData.getString("title");
+                    final Integer roomId = answerData.getInt("id");
 
+                    LinearLayout roomListLayout = (LinearLayout)findViewById(R.id.roomListLayout);
+
+                    TextView roomTextView = new TextView(RoomActivity.this);
+                    roomTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            goChatRoom(roomId);
+                            //System.out.println("CLICKED!!!!!!!!!!" + String.valueOf(roomId));
+                        }
+                    });
+
+                    roomTextView.setText(title);
+                    roomListLayout.addView(roomTextView);
                 } else {
 
                     new AlertDialog.Builder(RoomActivity.this)
@@ -170,6 +185,17 @@ public class RoomActivity extends AppCompatActivity {
                     TextView roomTextView = new TextView(RoomActivity.this);
                     roomTextView.setText(messageText);
                     roomListLayout.addView(roomTextView);
+
+
+                    final int roomId = obj.getInt("ID_ROOM");
+
+                    roomTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //System.out.println("CLICKED ======= " + String.valueOf(roomId));
+                            goChatRoom(roomId);
+                        }
+                    });
                 }
             } catch(Exception e){
                 System.out.println("!!!!!!!ERROR IN ROOMS ACTIVITY!!!!!!!!");
@@ -198,12 +224,26 @@ public class RoomActivity extends AppCompatActivity {
         try {
             RoomActivity.RequestPost req = new RoomActivity.RequestPost();
             String url = "http://10.0.2.2:3000/create_room";
-            String roomTitle = ((EditText) findViewById(R.id.newRoomText)).getText().toString().trim();
+            EditText roomFiled = ((EditText) findViewById(R.id.newRoomText));
+            String roomTitle = roomFiled.getText().toString().trim();
+            if (roomTitle.length() == 0) {
+                return;
+            }
+            roomFiled.setText("");
             String params = String.format("room=%s", roomTitle);
             req.execute(url, params).get();
         } catch(Exception e){
             System.out.println("!!!!!!!ERROR IN LOGIN ACTIVITY!!!!!!!!");
             e.printStackTrace();
         }
+    }
+
+    public void goChatRoom(int roomId) {
+        //System.out.println("roomId = " + Integer.toString(roomId));
+        Intent intent = new Intent(this, ChatActivity.class);
+        Bundle b = new Bundle();
+        b.putInt("roomId", roomId);
+        intent.putExtras(b);
+        startActivity(intent);
     }
 }

@@ -7,5 +7,27 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Мои предметы" />
+        android:text="Предметы" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/subjectListLayout"
+            android:layout_width= "match_parent"
+            android:layout_height= "wrap_content"
+            android:layout_alignParentBottom= "true"
+            android:gravity= "center"
+            android:padding= "16dp"
+            android:orientation="vertical">
+
+            <ListView
+                android:background="@color/colorPrimary"
+                android:id="@+id/itemsListView"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp">
+            </ListView>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

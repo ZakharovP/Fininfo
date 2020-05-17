@@ -52,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
     public static final int PICK_IMAGE = 1;
     public static final int GALLERY_PHOTO = 111;
     String filePath = "";
+    private int roomId;
 
 
     public class RequestImage extends AsyncTask<String, Void, Bitmap> {
@@ -164,8 +165,19 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("CREATE ACTIVITYT CHAT!!!!");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        Bundle b = getIntent().getExtras();
+        roomId = -1;
+        if (b != null) {
+            roomId = b.getInt("roomId");
+        }
+
+        System.out.println(">>>>roomId = " + Integer.toString(roomId));
+
+
         imgView = (ImageView) findViewById(R.id.imageView);
         new Thread(new ClientThread()).start();
 
@@ -181,6 +193,15 @@ public class ChatActivity extends AppCompatActivity {
             if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             }
+        }
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            socket.close();
+        } catch (Exception e) {
+           System.out.println("Error during closing a socket");
         }
     }
 
@@ -201,6 +222,11 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+
+    public int getRoomId() {
+        return roomId;
+    }
+
     class ClientThread implements Runnable {
         @Override
         public void run() {
@@ -213,6 +239,10 @@ public class ChatActivity extends AppCompatActivity {
                 byte[] buffer = new byte[8192];
 
                 String body = "";
+
+
+                getMessages(roomId);
+
 
                 while ((count = in.read(buffer)) > 0) {
                     byte[] slice = Arrays.copyOfRange(buffer, 0, count);
@@ -275,7 +305,6 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     }
                 }
-                System.out.println("OKKKKKKKK!!!!!!");
 
 
             }
@@ -295,6 +324,30 @@ public class ChatActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY_PHOTO);
     }
 
+
+    public void getMessages(int roomId) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("START!!!");
+                try {
+                    JSONObject data = new JSONObject();
+                    data.put("type", "init");
+                    data.put("roomId", getRoomId());
+                    out.write(data.toString().getBytes("UTF-8"));
+                    out.write("\1\0".getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+
+
     public void sendMessage(View view) {
         final EditText newMessageEditText = (EditText)findViewById(R.id.messageText);
         final String text = newMessageEditText.getText().toString().trim();
@@ -305,10 +358,11 @@ public class ChatActivity extends AppCompatActivity {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("START!!!");
                 try {
                     JSONObject data = new JSONObject();
                     data.put("text", text);
+                    data.put("roomId", roomId);
+                    data.put("type", "new");
                     out.write(data.toString().getBytes("UTF-8"));
                     out.write("\1\0".getBytes());
                     newMessageEditText.setText("");
@@ -350,6 +404,5 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         thread.start();
-        Log.i("app", text);
     }
 }
