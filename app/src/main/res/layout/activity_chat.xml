@@ -27,7 +27,7 @@
         android:orientation="horizontal">
         <Button
             android:id="@+id/loginSubmit"
-            android:layout_width="200dp"
+            android:layout_width="130dp"
             android:layout_height="45dp"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="10dp"
@@ -36,12 +36,20 @@
 
         <Button
             android:id="@+id/pickPhotoButton"
-            android:layout_width="200dp"
+            android:layout_width="130dp"
             android:layout_height="45dp"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="10dp"
             android:text="@string/pickPhoto"
             android:onClick="pickPhoto"/>
+        <Button
+            android:id="@+id/pickFileButton"
+            android:layout_width="130dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="10dp"
+            android:text="Выбрать документ"
+            android:onClick="pickFile"/>
     </LinearLayout>
 
     <ImageView

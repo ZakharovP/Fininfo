@@ -49,8 +49,9 @@ public class ChatActivity extends AppCompatActivity {
     InputStream in;
     OutputStream out;
     ImageView imgView;
-    public static final int PICK_IMAGE = 1;
+    public static final int FILE_RESULT_CODE = 1;
     public static final int GALLERY_PHOTO = 111;
+
     String filePath = "";
     private int roomId;
 
@@ -322,6 +323,13 @@ public class ChatActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY_PHOTO);
+    }
+
+
+    public void pickFile(View view) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");
+        startActivityForResult(intent, FILE_RESULT_CODE);
     }
 
 

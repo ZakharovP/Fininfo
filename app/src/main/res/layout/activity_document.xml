@@ -8,4 +8,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Документы" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/documentListLayout"
+            android:layout_width= "match_parent"
+            android:layout_height= "wrap_content"
+            android:layout_alignParentBottom= "true"
+            android:gravity= "center"
+            android:padding= "16dp"
+            android:orientation="vertical">
+
+            <ListView
+                android:background="@color/colorAccent"
+                android:id="@+id/itemsListView"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp">
+            </ListView>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
