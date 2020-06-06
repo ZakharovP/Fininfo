@@ -24,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class RoomActivity extends AppCompatActivity {
+    int userId;
     private class RequestPost extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -157,7 +158,6 @@ public class RoomActivity extends AppCompatActivity {
                     }
                 }
 
-                System.out.println("++++++++++++++" + content);
 
                 return content.toString();
 
@@ -192,7 +192,6 @@ public class RoomActivity extends AppCompatActivity {
                     roomTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //System.out.println("CLICKED ======= " + String.valueOf(roomId));
                             goChatRoom(roomId);
                         }
                     });
@@ -208,6 +207,11 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+
+
+        Intent intent = getIntent();
+        userId = Integer.parseInt(intent.getStringExtra("userId"));
+
 
         try {
             RoomActivity.RequestGET req = new RoomActivity.RequestGET();
@@ -243,6 +247,7 @@ public class RoomActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ChatActivity.class);
         Bundle b = new Bundle();
         b.putInt("roomId", roomId);
+        b.putInt("userId", userId);
         intent.putExtras(b);
         startActivity(intent);
     }

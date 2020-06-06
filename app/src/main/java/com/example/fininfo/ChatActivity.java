@@ -61,6 +61,7 @@ public class ChatActivity extends AppCompatActivity {
     String imagePath = "";
     String filePath = "";
     private int roomId;
+    private int userId = 4;
 
 
     public class RequestImage extends AsyncTask<String, Void, Bitmap> {
@@ -181,6 +182,7 @@ public class ChatActivity extends AppCompatActivity {
         roomId = -1;
         if (b != null) {
             roomId = b.getInt("roomId");
+            userId = b.getInt("userId");
         }
 
         System.out.println(">>>>roomId = " + Integer.toString(roomId));
@@ -402,6 +404,7 @@ public class ChatActivity extends AppCompatActivity {
                     JSONObject data = new JSONObject();
                     data.put("type", "init");
                     data.put("roomId", getRoomId());
+                    data.put("userId", userId);
                     out.write(data.toString().getBytes("UTF-8"));
                     out.write("\1\0".getBytes());
                 } catch (IOException e) {
@@ -530,6 +533,7 @@ public class ChatActivity extends AppCompatActivity {
                     data.put("roomId", roomId);
                     data.put("type", "new");
                     data.put("uid", uid);
+                    data.put("userId", userId);
                     out.write(data.toString().getBytes("UTF-8"));
                     out.write("\1\0".getBytes());
                     newMessageEditText.setText("");

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    String userId;
+
     private class Request extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -69,51 +71,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*try{
-            String url = "http://10.0.2.2:3000/teachers";
-            Request req = new Request();
-
-            String s_teachers = req.execute(url).get();
-
-            JSONArray teacherArray = new JSONArray(s_teachers);
-            ArrayList<String> teachers_t = new ArrayList<>();
-            for (int i = 0; i < teacherArray.length(); i++) {
-                String firstName = teacherArray.getJSONObject(i).getString("FIRST_NAME");
-                String secondName = teacherArray.getJSONObject(i).getString("SECOND_NAME");
-                String thirdName = teacherArray.getJSONObject(i).getString("THIRD_NAME");
-                String teacher = secondName + " " + firstName.substring(0, 1) + ". " + thirdName.substring(0, 1) + ".";
-                teachers_t.add(teacher);
-            }
-
-
-            String[] teachers_a = new String[teachers_t.size()];
-            final String[] teachers = teachers_t.toArray(teachers_a);
-
-
-            ListView teacherList = (ListView) findViewById(R.id.teachersListView);
-            ArrayAdapter<String> teachersAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, teachers);
-            teacherList.setAdapter(teachersAdapter);
-
-            teacherList.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String teacher = teachers[position];
-                    Log.i("app", teacher);
-                    Intent intent = new Intent(MainActivity.this, TeacherActivity.class);
-                    intent.putExtra("teacher", teacher);
-                    startActivity(intent);
-                }
-            });
-
-
-        } catch(Exception e){
-            System.out.println("!!!!!!!ERROR!!!!!!!!");
-            e.printStackTrace();
-        }*/
-
+        Intent intent = getIntent();
+        userId = intent.getStringExtra("userId");
 
         try {
-            //String url = "http://10.0.2.2:3000/classes";
             String url = "https://ruz.fa.ru/api/schedule/group/8892?lng=1";
             Request req = new Request();
 
@@ -123,12 +84,6 @@ public class MainActivity extends AppCompatActivity {
             JSONArray classArray = new JSONArray(s_classes);
             ArrayList<String> classes_t = new ArrayList<>();
             for (int i = 0; i < classArray.length(); i++) {
-                /*String startTime = classArray.getJSONObject(i).getString("START_TIME");
-                String endTime = classArray.getJSONObject(i).getString("END_TIME");
-                Integer dayOfWeekIndex = classArray.getJSONObject(i).getInt("DAY_OF_WEEK");
-                String location = classArray.getJSONObject(i).getString("LOCATION");
-                String teacherName = classArray.getJSONObject(i).getString("TEACHER_NAME");
-                String groupName = classArray.getJSONObject(i).getString("GROUP_NAME");*/
 
                 String startTime = classArray.getJSONObject(i).getString("beginLesson");
                 String endTime = classArray.getJSONObject(i).getString("endLesson");
@@ -137,11 +92,6 @@ public class MainActivity extends AppCompatActivity {
                 String teacherName = classArray.getJSONObject(i).getString("lecturer");
                 String groupName = classArray.getJSONObject(i).getString("groupOid");
 
-
-                //String[] daysOfWeek = {"пн", "вт", "ср", "чт", "пт", "сб", "вс"};
-                //String class_ = startTime + " - " + endTime + "\n";
-                //class_ = class_ +
-                //String class_ = String.format("%s - %s (%s), %s\n%s\n%s", startTime, endTime, daysOfWeek[dayOfWeekIndex], groupName, teacherName, location);
                 String class_ = String.format("%s - %s (%s), %s\n%s\n%s", startTime, endTime, dayOfWeek, groupName, teacherName, location);
                 classes_t.add(class_);
             }
@@ -168,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void goChats(View view) {
         Intent intent = new Intent(this, RoomActivity.class);
+        intent.putExtra("userId", userId);
         startActivity(intent);
     }
 

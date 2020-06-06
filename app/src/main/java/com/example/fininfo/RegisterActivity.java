@@ -84,8 +84,9 @@ public class RegisterActivity extends AppCompatActivity {
                 JSONObject answerData = new JSONObject(answer);
 
                 if (answerData.getBoolean("success")) {
+                    String userId = answerData.getString("userId");
                     Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    intent.putExtra("userId", 1);
+                    intent.putExtra("userId", userId);
                     startActivity(intent);
                 } else {
 

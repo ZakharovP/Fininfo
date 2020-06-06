@@ -73,7 +73,6 @@ public class TeacherActivity extends AppCompatActivity {
         protected void onPostExecute(String answer) {
             super.onPostExecute(answer);
             try {
-                System.out.println("Данные с сервера!!!");
                 JSONArray answerArray = new JSONArray(answer);
                 for (int i = 0 ; i < answerArray.length(); i++) {
                     JSONObject obj = answerArray.getJSONObject(i);
@@ -85,11 +84,6 @@ public class TeacherActivity extends AppCompatActivity {
                     TextView teacherTextView = new TextView(TeacherActivity.this);
                     teacherTextView.setText(label);
                     teacherTextView.setPadding(10, 30, 30, 10);
-                    //teacherTextView.setTextColor(0x2611E8FF);
-                    //teacherTextView.setBackgroundColor(Color.parseColor("#4444EE"));
-
-
-
 
                     GradientDrawable gd = new GradientDrawable();
                     gd.setStroke(4, Color.parseColor("#AA2211"));
