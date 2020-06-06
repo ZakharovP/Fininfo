@@ -21,6 +21,12 @@
         android:inputType="textPersonName"
         android:text="" />
 
+    <TextView
+        android:id="@+id/filePathTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,7 +62,9 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:gravity="center"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
 
     <ScrollView
         android:id="@+id/chatMessages"
@@ -79,5 +87,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
 
 </LinearLayout>

@@ -2,11 +2,15 @@ package com.example.fininfo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -95,17 +101,43 @@ public class DocumentActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             System.out.println(documentInfo);
+                            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+                            StrictMode.setThreadPolicy(policy);
+
                             try {
-                                URL url = new URL("http://192.168.1.26:3000/download/proba.txt");
-                                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                int data;
-                                while ((data = connection.getInputStream().read()) != -1) {
-                                    System.out.print((char) data);
-                                }
+                                DownloadManager downloadmanager = (DownloadManager) getSystemService(DocumentActivity.DOWNLOAD_SERVICE);
+                                Uri uri = Uri.parse("http://192.168.1.26:3000/download/" + documentInfo);
+
+                                DownloadManager.Request request = new DownloadManager.Request(uri);
+                                request.setTitle(documentInfo);
+                                request.setDescription("Downloading");
+                                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                request.setVisibleInDownloadsUi(false);
+                                String destination = "";
+                                System.out.println("file://" + Environment.getExternalStorageDirectory() + destination  + "/"  + documentInfo);
+                                request.setDestinationUri(Uri.parse("file://" + Environment.getExternalStorageDirectory() + destination  + "/"  + documentInfo));
+
+                                downloadmanager.enqueue(request);
                             } catch(Exception e){
                                 System.out.println("!!!!!!!ERROR IN DOCUMENT ACTIVITY!!!!!!!!");
                                 e.printStackTrace();
                             }
+
+                            /*try {
+                                URL url = new URL("http://192.168.1.26:3000/download/proba.txt");
+                                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                int data;
+
+                                FileOutputStream fos = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + "/" + "data/" + documentInfo));
+                                while ((data = connection.getInputStream().read()) != -1) {
+                                    System.out.print((char) data);
+                                    fos.write(data);
+                                }
+                            } catch(Exception e){
+                                System.out.println("!!!!!!!ERROR IN DOCUMENT ACTIVITY!!!!!!!!");
+                                e.printStackTrace();
+                            }*/
                         }
                     });
 

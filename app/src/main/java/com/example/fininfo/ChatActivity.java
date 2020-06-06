@@ -5,6 +5,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -27,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +45,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class ChatActivity extends AppCompatActivity {
     private Socket socket;
@@ -49,9 +54,11 @@ public class ChatActivity extends AppCompatActivity {
     InputStream in;
     OutputStream out;
     ImageView imgView;
+    TextView filePathTextView;
     public static final int FILE_RESULT_CODE = 1;
     public static final int GALLERY_PHOTO = 111;
 
+    String imagePath = "";
     String filePath = "";
     private int roomId;
 
@@ -180,6 +187,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         imgView = (ImageView) findViewById(R.id.imageView);
+        filePathTextView = (TextView) findViewById(R.id.filePathTextView);
         new Thread(new ClientThread()).start();
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -210,17 +218,23 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("requestCode = " + Integer.toString(requestCode));
-        System.out.println("resultCode = " + Integer.toString(resultCode));
-        if (requestCode == GALLERY_PHOTO && resultCode == Activity.RESULT_OK) {
+        if (requestCode == GALLERY_PHOTO) {
+            if (requestCode == GALLERY_PHOTO && resultCode == Activity.RESULT_OK) {
+                if (data.getData() != null) {
+                    imagePath = GetFilePathFromDevice.getPath(ChatActivity.this, data.getData());
+                    Bitmap bm = BitmapFactory.decodeFile(imagePath);
+                    imgView.setImageBitmap(bm);
+                }
+            }
+        } else if (requestCode == FILE_RESULT_CODE) {
             if (data.getData() != null) {
                 filePath = GetFilePathFromDevice.getPath(ChatActivity.this, data.getData());
-
-                System.out.println("filepath = " + filePath);
-                Bitmap bm = BitmapFactory.decodeFile(filePath);
-                imgView.setImageBitmap(bm);
+                String[] arr = filePath.split("/");
+                String filename = arr[arr.length - 1];
+                filePathTextView.setText("Выбранный документ: " + filename);
             }
         }
+
     }
 
 
@@ -263,6 +277,7 @@ public class ChatActivity extends AppCompatActivity {
 
                                 final String messageText = data.getString("text");
                                 final String messageImage = data.getString("image");
+                                final String messageFile = data.getString("file");
                                 final String messageUser = data.getString("user");
                                 System.out.println("На вывод = " + data.getString("text"));
 
@@ -293,6 +308,42 @@ public class ChatActivity extends AppCompatActivity {
                                                 System.out.println("An error in getting an image...");
                                                 e.printStackTrace();
                                             }
+
+                                        }
+
+                                        if (messageFile.length() > 0) {
+                                            TextView documentTextView = new TextView(ChatActivity.this);
+                                            documentTextView.setText(messageFile);
+                                            documentTextView.setTextColor(0xFFFF0000);
+                                            chatMessagesLayout.addView(documentTextView);
+
+                                            final String filename = messageFile;
+                                            documentTextView.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                                                    StrictMode.setThreadPolicy(policy);
+                                                    try {
+                                                        DownloadManager downloadmanager = (DownloadManager) getSystemService(DocumentActivity.DOWNLOAD_SERVICE);
+                                                        Uri uri = Uri.parse("http://192.168.1.26:3000/download/" + filename);
+
+                                                        DownloadManager.Request request = new DownloadManager.Request(uri);
+                                                        request.setTitle(filename);
+                                                        request.setDescription("Downloading");
+                                                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                                        request.setVisibleInDownloadsUi(false);
+                                                        String destination = "";
+                                                        System.out.println("file://" + Environment.getExternalStorageDirectory() + destination  + "/"  + filename);
+                                                        request.setDestinationUri(Uri.parse("file://" + Environment.getExternalStorageDirectory() + destination  + "/"  + filename));
+
+                                                        downloadmanager.enqueue(request);
+                                                    } catch(Exception e){
+                                                        System.out.println("!!!!!!!ERROR IN DOWNLOADING DOCUMENT ACTIVITY!!!!!!!!");
+                                                        e.printStackTrace();
+                                                    }
+
+                                                }
+                                            });
 
                                         }
                                     }
@@ -328,8 +379,17 @@ public class ChatActivity extends AppCompatActivity {
 
     public void pickFile(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");
-        startActivityForResult(intent, FILE_RESULT_CODE);
+        intent.setType("*/*");
+
+        ComponentName testedActivity = intent.resolveActivity(getPackageManager());
+        if (testedActivity != null) {
+            startActivityForResult(Intent.createChooser(intent, "Select Document"), FILE_RESULT_CODE);
+        } else {
+            Toast.makeText(this,"No file explorer available",Toast.LENGTH_LONG).show();
+        }
+
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
+        //startActivityForResult(Intent.createChooser(intent, "Select Document"), FILE_RESULT_CODE);
     }
 
 
@@ -366,11 +426,110 @@ public class ChatActivity extends AppCompatActivity {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                String uid = UUID.randomUUID().toString();
+
+                if (imagePath != "") {
+                    try {
+                        File imageFile = new File(imagePath);
+                        int fileSize = (int)imageFile.length();
+
+                        System.out.println(">>>Размер файла картинки = " + Integer.toString(fileSize));
+
+                        InputStream fileStream = new FileInputStream(imageFile);
+                        BufferedInputStream buf = new BufferedInputStream(fileStream);
+                        byte[] imageBytes = new byte[fileSize];
+                        buf.read(imageBytes);
+
+                        byte[] encodedImageBytes = Base64.encode(imageBytes, Base64.NO_WRAP | Base64.URL_SAFE);
+                        out.write(encodedImageBytes);
+                        out.write("\3".getBytes());
+
+                        String[] arr = imagePath.split("/");
+                        String filename = arr[arr.length - 1];
+
+
+                        JSONObject metaInfo = new JSONObject();
+                        metaInfo.put("filename", filename);
+                        metaInfo.put("type", "image");
+                        metaInfo.put("uid", uid);
+
+                        byte[] encodedMetaDataBytes = Base64.encode(metaInfo.toString().getBytes("UTF-8"), Base64.NO_WRAP | Base64.URL_SAFE);
+                        out.write(encodedMetaDataBytes);
+
+                        out.write("\2\0".getBytes());
+                        out.flush();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    imagePath = "";
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            imgView.setImageResource(0);
+                        }
+                    });
+                }
+
+                if (filePath != "") {
+                    try {
+                        File documentFile = new File(filePath);
+                        int fileSize = (int)documentFile.length();
+
+                        System.out.println(">>>Размер файла документа = " + Integer.toString(fileSize));
+
+                        InputStream fileStream = new FileInputStream(documentFile);
+                        BufferedInputStream buf = new BufferedInputStream(fileStream);
+                        byte[] fileBytes = new byte[fileSize];
+                        buf.read(fileBytes);
+
+                        byte[] encodedFileBytes = Base64.encode(fileBytes, Base64.NO_WRAP | Base64.URL_SAFE);
+                        out.write(encodedFileBytes);
+                        out.write("\3".getBytes());
+
+                        String[] arr = filePath.split("/");
+                        String filename = arr[arr.length - 1];
+
+
+                        JSONObject metaInfo = new JSONObject();
+                        metaInfo.put("filename", filename);
+                        metaInfo.put("type", "file");
+                        metaInfo.put("uid", uid);
+
+                        byte[] encodedMetaDataBytes = Base64.encode(metaInfo.toString().getBytes("UTF-8"), Base64.NO_WRAP | Base64.URL_SAFE);
+                        out.write(encodedMetaDataBytes);
+
+                        out.write("\2\0".getBytes());
+                        out.flush();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    filePath = "";
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            filePathTextView.setText("");
+                        }
+                    });
+                }
+
+
+
                 try {
                     JSONObject data = new JSONObject();
                     data.put("text", text);
                     data.put("roomId", roomId);
                     data.put("type", "new");
+                    data.put("uid", uid);
                     out.write(data.toString().getBytes("UTF-8"));
                     out.write("\1\0".getBytes());
                     newMessageEditText.setText("");
@@ -380,35 +539,6 @@ public class ChatActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                if (filePath != "") {
-                    try {
-                        File imageFile = new File(filePath);
-                        int fileSize = (int)imageFile.length();
-
-                        System.out.println(">>>Размер файла = " + Integer.toString(fileSize));
-
-                        InputStream fileStream = new FileInputStream(imageFile);
-                        BufferedInputStream buf = new BufferedInputStream(fileStream);
-                        byte[] imageBytes = new byte[fileSize];
-                        buf.read(imageBytes);
-
-                        byte[] encodedImageBytes = Base64.encode(imageBytes, Base64.NO_WRAP | Base64.URL_SAFE);
-                        out.write(encodedImageBytes);
-                        out.write("\2\0".getBytes());
-                        out.flush();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    filePath = "";
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            imgView.setImageResource(0);
-                        }
-                    });
-                }
             }
         });
         thread.start();
