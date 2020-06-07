@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -20,14 +19,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class RegisterActivity extends AppCompatActivity {
+    // класс асинхронной задачи для отправки запроса на сервер о регистрации
     private class Request extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            String path = params[0];
+            HttpURLConnection connection = null; // переменная соединения
+            String path = params[0]; // получаем путь к запросу
             String parammetrs = params[1];
 
-            String response = "";
+            String response = ""; // переменная для формирование ответа
 
 
             byte[] data = null;
@@ -35,33 +35,37 @@ public class RegisterActivity extends AppCompatActivity {
 
             try {
                 URL url = new URL(path);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // создаем экземпляр соединения
+                conn.setRequestMethod("POST"); // для регистрации используем POST запрос
+                conn.setDoOutput(true); // используем соединение для отправки данных
+                conn.setDoInput(true); // используем соединение для входящих данных
 
+                // заголовок длины тела запроса
                 conn.setRequestProperty("Content-Length", "" + Integer.toString(parammetrs.getBytes().length));
-                OutputStream os = conn.getOutputStream();
-                data = parammetrs.getBytes("UTF-8");
-                os.write(data);
+                OutputStream os = conn.getOutputStream();  // поток для отправки данных
+                data = parammetrs.getBytes("UTF-8"); // данные в байтах
+                os.write(data); // записываем в поток полученные байты
                 data = null;
 
-                conn.connect();
-                int responseCode= conn.getResponseCode();
+                conn.connect(); // установка соединение, запрос
+                int responseCode = conn.getResponseCode(); // код ответа
 
+                // поток для записи полученных байт с сервера из буфера
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
+                // если запрос был успешен
                 if (responseCode == 200) {
-                    is = conn.getInputStream();
+                    is = conn.getInputStream(); // поток входящих данных
 
-                    byte[] buffer = new byte[8192];
+                    byte[] buffer = new byte[8192]; // буфер данных с сервера
 
-                    int bytesRead;
+                    int bytesRead; // кол-во байт
+                    // в цикле считываем из входящего потока байты, пришедшие с сервера
                     while ((bytesRead = is.read(buffer)) != -1) {
-                        baos.write(buffer, 0, bytesRead);
+                        baos.write(buffer, 0, bytesRead); // записываем в поток baos данные буфера
                     }
-                    data = baos.toByteArray();
-                    response = new String(data, "UTF-8");
+                    data = baos.toByteArray(); // получаем записанные байты из потока baos
+                    response = new String(data, "UTF-8");  // формируем строку ответа сервера
                 }
 
                 return response;
@@ -79,17 +83,23 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String answer) {
+            // обработка ответа сервера
             super.onPostExecute(answer);
             try {
+                // формируем JSON объект из строки ответа
                 JSONObject answerData = new JSONObject(answer);
 
+                // если регистрация прошла успешно
                 if (answerData.getBoolean("success")) {
-                    String userId = answerData.getString("userId");
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    intent.putExtra("userId", userId);
-                    startActivity(intent);
-                } else {
+                    String userId = answerData.getString("userId"); // получаем ID нового юзера
 
+                    // делаем переход на главный экран
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    // передаем параметр userId для дальнейшего использования в другиъ экранах
+                    intent.putExtra("userId", userId);
+                    startActivity(intent); // переход
+                } else {
+                    // если запрос не успешен, то выдаем сообщение об ошибке
                     new AlertDialog.Builder(RegisterActivity.this)
                             .setTitle("Ошибка авторизации")
                             .setMessage(answerData.getString("error"))
@@ -115,19 +125,24 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
     }
 
+    // обработчик нажатия кнопки регистрации
     public void register(View view) {
         try {
+            // получение всех полей формы
             String login = ((EditText) findViewById(R.id.loginText)).getText().toString().trim();
             String password = ((EditText) findViewById(R.id.passwordText)).getText().toString().trim();
             String firstName = ((EditText) findViewById(R.id.firstNameText)).getText().toString().trim();
             String secondName = ((EditText) findViewById(R.id.secondNameText)).getText().toString().trim();
             String thirdName = ((EditText) findViewById(R.id.thirdNameText)).getText().toString().trim();
 
+            // создаем запрос к HTTP серверу по URL
             String url = "http://10.0.2.2:3000/register";
             RegisterActivity.Request req = new RegisterActivity.Request();
 
-
+            // формируем тело  запроса
             String params = String.format("login=%s&password=%s&first_name=%s&second_name=%s&third_name=%s", login, password, firstName, secondName, thirdName);
+
+            // отправка запроса
             req.execute(url, params).get();
         } catch(Exception e){
             System.out.println("!!!!!!!ERROR IN REGISTER ACTIVITY!!!!!!!!");
@@ -135,6 +150,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    // обработка нажатия кнопки Назад и переход на экран логина
     public void goBack(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

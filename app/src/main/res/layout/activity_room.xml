@@ -21,17 +21,21 @@
         android:hint="Название новой комнаты"
         android:text="" />
 
-    <LinearLayout
-        android:id="@+id/roomListLayout"
-        android:layout_width="match_parent"
-        android:layout_height="370dp"
-        android:orientation="vertical"></LinearLayout>
-
     <Button
         android:id="@+id/newRoomButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:onClick="createRoom"
+        android:layout_height="44dp"
         android:text="Создать комнату" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/roomListLayout"
+            android:layout_width="match_parent"
+            android:layout_height="370dp"
+            android:orientation="vertical"></LinearLayout>
+    </ScrollView>>
 
 </LinearLayout>
