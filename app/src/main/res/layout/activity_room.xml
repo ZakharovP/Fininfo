@@ -8,6 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         android:inputType="textPersonName"
         android:text="Список комнат" />
 
@@ -18,7 +20,22 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="60dp"
         android:ems="10"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         android:hint="Название новой комнаты"
+        android:text="" />
+
+    <EditText
+        android:id="@+id/newRoomPassword"
+        android:layout_width="394dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="60dp"
+        android:ems="10"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
+        android:hint="Пароль для комнаты (опционально)"
+        android:inputType="textPassword"
         android:text="" />
 
     <Button

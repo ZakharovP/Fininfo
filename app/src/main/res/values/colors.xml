@@ -3,6 +3,8 @@
     <color name="colorPrimary">#FF0000</color>
     <color name="colorPrimaryDark">#00FF00</color>
     <color name="colorAccent">#8888FF</color>
+    <color name="colorText">#7b68ee</color>
+    <color name="colorTextHint">#7b6866</color>
 
     <color name="colorBackgroundLight">#EFEFFF</color>
     <color name="colorBackgroundDark">#000000</color>

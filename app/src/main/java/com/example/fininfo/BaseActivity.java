@@ -1,6 +1,5 @@
 package com.example.fininfo;
 
-//import android.content.SharedPreferences;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,7 +18,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         theme = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "DarkTheme");
         //System.out.println(">>>> READ THEME: " + theme);
         try {

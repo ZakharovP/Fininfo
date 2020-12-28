@@ -16,12 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/DarkTheme">
         <activity android:name=".MainActivity">
+        </activity>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".LoginActivity">
         </activity>
         <activity android:name=".TeacherActivity"></activity>
         <activity android:name=".TeacherInfoActivity"></activity>
