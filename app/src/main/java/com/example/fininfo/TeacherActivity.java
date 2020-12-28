@@ -1,7 +1,5 @@
 package com.example.fininfo;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -19,7 +17,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class TeacherActivity extends AppCompatActivity {
+public class TeacherActivity extends BaseActivity {
     // класс запроса в асинхронном режиме списка преподавателей
     private class RequestGET extends AsyncTask<String, Integer, String> {
         @Override
@@ -117,6 +115,7 @@ public class TeacherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher);
+        this.activityLayout = R.layout.activity_teacher;
 
         // в начале, при загрузке, получаем от сервера список учителей
         try {

@@ -1,6 +1,5 @@
 package com.example.fininfo;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.app.DownloadManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -19,7 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DocumentActivity extends AppCompatActivity {
+public class DocumentActivity extends BaseActivity {
     // класс для получения списка документов в асинхронном режиме
     private class RequestGET extends AsyncTask<String, Integer, String> {
         @Override
@@ -136,6 +135,7 @@ public class DocumentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document);
+        this.activityLayout = R.layout.activity_document;
 
         // при инициализации делаем запрос на сервер для получения списка документов
         try {

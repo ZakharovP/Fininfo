@@ -1,6 +1,5 @@
 package com.example.fininfo;
 
-import androidx.appcompat.app.AppCompatActivity;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,7 +18,7 @@ import android.widget.EditText;
 import org.json.JSONObject;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     // класс асинхронной задачи для отправки запроса на сервер
     private class Request extends AsyncTask<String, Integer, String> {
@@ -132,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        this.activityLayout = R.layout.activity_login;
     }
 
     // обработчик нажатия клавиши
@@ -157,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void goRegister(View view) {
         // при клике на кнопке Регистрации переход на activity с регистрацией
-        Intent intent = new Intent(this, RegisterActivity.class);
+        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
     }
 }

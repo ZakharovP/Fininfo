@@ -1,12 +1,15 @@
 package com.example.fininfo;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import org.json.JSONArray;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,7 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     String userId; // переменная для хренения ID юзера после авторизации, передается в следующие экраны
 
@@ -61,10 +64,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.theme, menu);// Menu Resource, Menu
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case R.id.action_light_theme:
+                super.setTheme(R.style.LightTheme);
+                //Toast.makeText(getApplicationContext(), "Light theme Selected", Toast.LENGTH_LONG).show();
+                setContentView(R.layout.activity_main);
+                return true;
+
+            case R.id.action_dark_theme:
+                Toast.makeText(getApplicationContext(), "Dark theme Selected", Toast.LENGTH_LONG).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.activityLayout = R.layout.activity_main;
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId"); // получаем userId из экрана авторизации

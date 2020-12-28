@@ -1,6 +1,5 @@
 package com.example.fininfo;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
@@ -46,7 +45,7 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseActivity {
     private Socket socket; // сокет TCP сервера
     private String ServerIP = "10.0.2.2"; // IP для TCP сервера
     private static final int ServerPort = 3001; // порт длл TCP сервера
@@ -189,6 +188,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        this.activityLayout = R.layout.activity_chat;
 
         // при инициализации экрана получаем ID комнаты и юзера
         Bundle b = getIntent().getExtras();

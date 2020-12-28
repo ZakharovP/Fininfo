@@ -1,6 +1,5 @@
 package com.example.fininfo;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -17,7 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class SubjectActivity extends AppCompatActivity {
+public class SubjectActivity extends BaseActivity {
     // класс для получения в асинхронном режиме списка предметов
     private class RequestGET extends AsyncTask<String, Integer, String> {
         @Override
@@ -99,6 +98,7 @@ public class SubjectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subject);
+        this.activityLayout = R.layout.activity_subject;
 
         // при загрузке экрана делаем запрос на получение списка предметов
         try {

@@ -1,6 +1,5 @@
 package com.example.fininfo;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,7 +17,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
     // класс асинхронной задачи для отправки запроса на сервер о регистрации
     private class Request extends AsyncTask<String, Integer, String> {
         @Override
@@ -123,6 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        this.activityLayout = R.layout.activity_register;
     }
 
     // обработчик нажатия кнопки регистрации

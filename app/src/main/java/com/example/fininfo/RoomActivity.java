@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +22,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class RoomActivity extends AppCompatActivity {
+public class RoomActivity extends BaseActivity {
     int userId; // идентификатор юзера, получаемый из главного экрана
 
     // класс для POST запросов, которые создают чат-комнаты
@@ -221,6 +220,7 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+        this.activityLayout = R.layout.activity_room;
 
         // получаем ID юзера из прошлого активити
         Intent intent = getIntent();
