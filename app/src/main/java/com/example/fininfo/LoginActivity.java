@@ -18,115 +18,98 @@ import android.widget.EditText;
 import org.json.JSONObject;
 
 
-public class LoginActivity extends BaseActivity {
+// класс асинхронной задачи для отправки запроса на сервер
+class Request extends AsyncTask<String, Integer, String> {
 
-    // класс асинхронной задачи для отправки запроса на сервер
-    private class Request extends AsyncTask<String, Integer, String> {
-        @Override
-        protected String doInBackground(String... params) {
+    public interface TaskListener {
+        void onFinished(String result);
+    }
 
-            HttpURLConnection connection = null;
-            String path = params[0]; // получаем путь url для запроса
-            String parammetrs = params[1];
+    private final TaskListener taskListener;
 
-            String response = ""; // строка для ответа сервера
+    Request(TaskListener listener) {
+        this.taskListener = listener;
+    }
 
 
-            byte[] data = null; // считываемые двоичные данные
-            InputStream is = null; // поток входящих байт ответа сервера
 
-            try {
-                // устанавливаем соединение
-                URL url = new URL(path); // объект url
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");  // POST запрос
-                conn.setDoOutput(true); // нужно для отправки тела POST запроса
-                conn.setDoInput(true);
+    @Override
+    protected String doInBackground(String... params) {
 
-                // заголовок HTTP
-                conn.setRequestProperty("Content-Length", "" + Integer.toString(parammetrs.getBytes().length));
-                OutputStream os = conn.getOutputStream(); // выходной поток на отправку к серверу
-                data = parammetrs.getBytes("UTF-8"); // получение байт тела запроса
-                os.write(data); // отправка на сервер
-                data = null;
+        HttpURLConnection connection = null;
+        String path = params[0]; // получаем путь url для запроса
+        String parammetrs = params[1];
 
-                conn.connect();
-                int responseCode = conn.getResponseCode();  // получаем код ответа от сервера
+        String response = ""; // строка для ответа сервера
 
-                // поток для записи полученных данных
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-                // если запрос успешен
-                if (responseCode == 200) {
-                    is = conn.getInputStream();
+        byte[] data = null; // считываемые двоичные данные
+        InputStream is = null; // поток входящих байт ответа сервера
 
-                    // буфер для записи порций пришедших данных
-                    byte[] buffer = new byte[8192];
-                    int bytesRead; // кол-ов считанных байт
+        try {
+            // устанавливаем соединение
+            URL url = new URL(path); // объект url
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");  // POST запрос
+            conn.setDoOutput(true); // нужно для отправки тела POST запроса
+            conn.setDoInput(true);
 
-                    // считываем данные
-                    while ((bytesRead = is.read(buffer)) != -1) {
-                        baos.write(buffer, 0, bytesRead);
-                    }
-                    data = baos.toByteArray();
-                    // формируем строку ответа от сервера
-                    response = new String(data, "UTF-8");
+            // заголовок HTTP
+            conn.setRequestProperty("Content-Length", "" + Integer.toString(parammetrs.getBytes().length));
+            OutputStream os = conn.getOutputStream(); // выходной поток на отправку к серверу
+            data = parammetrs.getBytes("UTF-8"); // получение байт тела запроса
+            os.write(data); // отправка на сервер
+            data = null;
+
+            conn.connect();
+            int responseCode = conn.getResponseCode();  // получаем код ответа от сервера
+
+            // поток для записи полученных данных
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            // если запрос успешен
+            if (responseCode == 200) {
+                is = conn.getInputStream();
+
+                // буфер для записи порций пришедших данных
+                byte[] buffer = new byte[8192];
+                int bytesRead; // кол-ов считанных байт
+
+                // считываем данные
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, bytesRead);
                 }
-
-                return response;
-            } catch (Exception e) {
-                System.out.println("ERROR!!!!!");
-                System.out.println(e.toString());
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
+                data = baos.toByteArray();
+                // формируем строку ответа от сервера
+                response = new String(data, "UTF-8");
             }
-        }
 
-        @Override
-        protected void onPostExecute(String answer) {
-            /*
-            * После окончания запроса и формирования строки ответа ее нужно распарсить и выполнить все необходимые действия,
-            * такие как переход на главный экран
-            * */
-            super.onPostExecute(answer);
-            try {
-                // из строки формируем JSON объект
-                JSONObject answerData = new JSONObject(answer);
-
-                // если авторизация успешна
-                if (answerData.getBoolean("success")) {
-                    String userId = answerData.getString("userId");  // получаем ID юзера
-
-                    // формируем Intent для перехода на главный экран
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("userId", userId); // необходимо сохранить параметр userId
-                    startActivity(intent);
-                } else {
-                    // если авторизация была неуспешной, то выводим сообщение об этом
-                    new AlertDialog.Builder(LoginActivity.this)
-                            .setTitle("Ошибка авторизации")
-                            .setMessage(answerData.getString("error"))
-                            .setCancelable(false)
-                            .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            }).show();
-
-
-                }
-            } catch(Exception e){
-                System.out.println("!!!!!!!ERROR IN LOGIN ACTIVITY!!!!!!!!");
-                e.printStackTrace();
+            return response;
+        } catch (Exception e) {
+            System.out.println("ERROR!!!!!");
+            System.out.println(e.toString());
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
             }
         }
     }
 
+
+    @Override
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+
+        if(this.taskListener != null) {
+            this.taskListener.onFinished(result);
+        }
+    }
+}
+
+
+public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +118,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     // обработчик нажатия клавиши
-    public void logIn(View view){
+    public void logIn(View view) {
         try {
             // получаем поля логина и пароля из формы
             String login = ((EditText) findViewById(R.id.loginText)).getText().toString().trim();
@@ -145,7 +128,45 @@ public class LoginActivity extends BaseActivity {
             String url = "http://10.0.2.2:3000/login";
 
             // создаем экземпляр запроса и выполняем его
-            LoginActivity.Request req = new LoginActivity.Request();
+            Request req = new Request(
+                new Request.TaskListener() {
+                    @Override
+                    public void onFinished(String answer) {
+                        // После окончания запроса и формирования строки ответа ее нужно распарсить и выполнить все необходимые действия,
+                        // такие как переход на главный экран
+                        try {
+                            // из строки формируем JSON объект
+                            JSONObject answerData = new JSONObject(answer);
+
+                            // если авторизация успешна
+                            if (answerData.getBoolean("success")) {
+                                String userId = answerData.getString("userId");  // получаем ID юзера
+
+                                // формируем Intent для перехода на главный экран
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.putExtra("userId", userId); // необходимо сохранить параметр userId
+                                startActivity(intent);
+                            } else {
+                                // если авторизация была неуспешной, то выводим сообщение об этом
+                                new AlertDialog.Builder(LoginActivity.this)
+                                        .setTitle("Ошибка авторизации")
+                                        .setMessage(answerData.getString("error"))
+                                        .setCancelable(false)
+                                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
+                                        }).show();
+                            }
+                        } catch(Exception e){
+                            System.out.println("!!!!!!!ERROR IN LOGIN ACTIVITY!!!!!!!!");
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            );
+
             String params = String.format("login=%s&password=%s", login, password);
             req.execute(url, params).get();
 

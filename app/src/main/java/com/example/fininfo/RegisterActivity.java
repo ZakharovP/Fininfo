@@ -4,6 +4,7 @@ package com.example.fininfo;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.StringJoiner;
 
 public class RegisterActivity extends BaseActivity {
     // класс асинхронной задачи для отправки запроса на сервер о регистрации
@@ -129,18 +131,24 @@ public class RegisterActivity extends BaseActivity {
     public void register(View view) {
         try {
             // получение всех полей формы
-            String login = ((EditText) findViewById(R.id.loginText)).getText().toString().trim();
-            String password = ((EditText) findViewById(R.id.passwordText)).getText().toString().trim();
-            String firstName = ((EditText) findViewById(R.id.firstNameText)).getText().toString().trim();
-            String secondName = ((EditText) findViewById(R.id.secondNameText)).getText().toString().trim();
-            String thirdName = ((EditText) findViewById(R.id.thirdNameText)).getText().toString().trim();
+            Resources resources = getResources();
+            StringJoiner joiner = new StringJoiner("&");
+            String[] fields = new String[]{"login", "password", "firstName", "secondName", "thirdName"};
+            String[] attrs = new String[]{"login", "password", "first_name", "second_name", "third_name"};
+
+            for (int i = 0; i < fields.length; i++) {
+                String key = attrs[i];
+                int id = resources.getIdentifier(fields[i] + "Text", "id", this.getPackageName());
+                String value = ((EditText) findViewById(id)).getText().toString().trim();
+                joiner.add(String.format("%s=%s", key, value));
+            }
+
+            // формируем тело  запроса
+            String params = joiner.toString();
 
             // создаем запрос к HTTP серверу по URL
             String url = "http://10.0.2.2:3000/register";
             RegisterActivity.Request req = new RegisterActivity.Request();
-
-            // формируем тело  запроса
-            String params = String.format("login=%s&password=%s&first_name=%s&second_name=%s&third_name=%s", login, password, firstName, secondName, thirdName);
 
             // отправка запроса
             req.execute(url, params).get();

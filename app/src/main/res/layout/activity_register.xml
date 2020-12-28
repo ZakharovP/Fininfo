@@ -18,6 +18,8 @@
         android:ems="10"
         android:hint="Логин"
         android:inputType="textPersonName"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         android:text=""/>
 
 
@@ -30,6 +32,8 @@
         android:ems="10"
         android:hint="Пароль"
         android:inputType="textPassword"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         android:text=""/>
 
     <EditText
@@ -40,6 +44,8 @@
         android:layout_marginEnd="60dp"
         android:ems="10"
         android:hint="Имя"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         android:text=""/>
 
     <EditText
@@ -50,6 +56,8 @@
         android:layout_marginEnd="60dp"
         android:ems="10"
         android:hint="Фамилия"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         android:text=""/>
 
     <EditText
@@ -58,6 +66,8 @@
         android:layout_height="54dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="60dp"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         android:ems="10"
         android:hint="Отчество"
         android:text=""/>
