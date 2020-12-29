@@ -1,20 +1,12 @@
 package com.example.fininfo;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -22,88 +14,23 @@ public class MainActivity extends BaseActivity {
 
     String userId; // переменная для хренения ID юзера после авторизации, передается в следующие экраны
 
-    // класс для запроса и получения данных группы
-    private class Request extends AsyncTask<String, Integer, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            String url = params[0]; // получаем URL запроса
-            HttpURLConnection connection = null;
-
-            try {
-                URL obj = new URL(url);
-                // создаем объект соединениея
-                connection = (HttpURLConnection) obj.openConnection();
-                connection.setRequestMethod("GET"); // устанавливаем метод GET
-
-                // объект чтения данных с сервера
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String inputLine; // строка данных
-                StringBuffer content = new StringBuffer(); // объект для хренения и конкатенации строк
-
-                while ((inputLine = in.readLine()) != null) { // в цикле считываем по строке и добавляем в StringBuilder
-                    content.append(inputLine);
-                    content.append(System.lineSeparator()); // добавялем разделитель
-                }
-                in.close();
-                return content.toString(); // формируем строку
-            } catch (Exception e) {
-                System.out.println("ERROR!!!!!");
-                System.out.println(e.toString());
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-    }
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.theme, menu);// Menu Resource, Menu
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
-            case R.id.action_light_theme:
-                super.setTheme(R.style.LightTheme);
-                //Toast.makeText(getApplicationContext(), "Light theme Selected", Toast.LENGTH_LONG).show();
-                setContentView(R.layout.activity_main);
-                return true;
-
-            case R.id.action_dark_theme:
-                Toast.makeText(getApplicationContext(), "Dark theme Selected", Toast.LENGTH_LONG).show();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.activityLayout = R.layout.activity_main;
+        //this.activityLayout = R.layout.activity_main;
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId"); // получаем userId из экрана авторизации
 
         try {
             String url = "https://ruz.fa.ru/api/schedule/group/8892?lng=1"; // URL для получения данных
-            Request req = new Request(); // создаем объект запроса
+            RequestGET req = new RequestGET(
+                    new RequestGET.TaskListener() {
+                        @Override
+                        public void onFinished(String answer) {}
+                    }
+            ); // создаем объект запроса
 
             String s_classes = req.execute(url).get(); // выполняем запрос
 

@@ -9,12 +9,10 @@ public class TeacherInfoActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_info);
-        this.activityLayout = R.layout.activity_teacher_info;
 
         // получаем из intent данные об учителе и выводим это в текстовый элемент, найденный по id teacherInfo в представлении
         TextView textView = (TextView) findViewById(R.id.teacherInfo);
         String teacherInfo = getIntent().getStringExtra("teacherInfo");
         textView.setText(teacherInfo);
-
     }
 }

@@ -14,7 +14,6 @@ import java.lang.reflect.Field;
 public abstract class BaseActivity extends AppCompatActivity {
 
     String theme = "DarkTheme";
-    int activityLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +51,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item)
     {
 
-        System.out.println(">>>" + this.activityLayout);
         SharedPreferences.Editor prefsEdit = PreferenceManager.getDefaultSharedPreferences(this).edit();
         switch(item.getItemId())
         {
@@ -60,21 +58,16 @@ public abstract class BaseActivity extends AppCompatActivity {
                 theme = "LightTheme";
                 prefsEdit.putString("theme", theme);
                 prefsEdit.commit();
-                //System.out.println(">>>> SAVE THEME: " + theme);
                 setTheme(R.style.LightTheme);
-                setContentView(this.activityLayout);
-                //setContentView(R.layout.activity_teacher);
+                super.recreate();
                 return true;
 
             case R.id.action_dark_theme:
                 theme = "DarkTheme";
                 prefsEdit.putString("theme", theme);
                 prefsEdit.commit();
-                //System.out.println(">>>> SAVE THEME: " + theme);
                 setTheme(R.style.DarkTheme);
-                //setContentView(this.activityLayout);
-                setContentView(this.activityLayout);
-                //setContentView(R.layout.activity_teacher);
+                super.recreate();
                 return true;
 
             default:

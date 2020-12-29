@@ -188,7 +188,7 @@ public class ChatActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        this.activityLayout = R.layout.activity_chat;
+        //this.activityLayout = R.layout.activity_chat;
 
         // при инициализации экрана получаем ID комнаты и юзера
         Bundle b = getIntent().getExtras();
